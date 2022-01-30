@@ -15,7 +15,7 @@ const Heading = ({ addr, walletBtnOnClick }) => {
             <div className="top-header">
                 <a href="https://dkvalidator.one" title="Stake Harmony ONE with DK Validator"><img className="logo" src={logo} alt="DK Validator - Harmony ONE Staking" width="300px" /></a>
                 <div className='header-left'>
-                    <button className="walletbutton" onClick={walletBtnOnClick}>{addr ? addressTxt : 'Connect Wallet'}</button>
+                    <button className="walletbutton" onClick={() => walletBtnOnClick()}>{addr ? addressTxt : 'Connect Wallet'}</button>
                 </div>
             </div>
         </>

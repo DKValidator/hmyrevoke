@@ -1,19 +1,24 @@
 import React from 'react';
 import Allowance from './Allowance';
 import { useState, useEffect } from 'react';
-/*
-import moment from 'moment';
-import web3 from 'web3'
-*/
-export async function sendHmyRequest(request) {
-    const resp = await fetch('https://api.harmony.one', request);
+import { HarmonyAddress } from '@harmony-js/crypto'
 
+async function sendHmyRequest(request) {
+
+    let url = 'https://api.harmony.one'
+
+    if (window.ethereum.networkVersion === 1666700000)
+        url = 'https://api.s0.b.hmny.io'
+
+    console.log('request url: ' + url)
+    const resp = await fetch(url, request);
+    //const resp = await window.ethereum.request(request);
     const responseJson = await resp.json();
 
     return responseJson;
 }
 
-export async function getTransactionData(addr, setData) {
+async function getTransactionData(addr, setData, web3) {
     console.log('Getting transaction for ' + addr)
 
     const message = {
@@ -42,6 +47,7 @@ export async function getTransactionData(addr, setData) {
     };
 
     const response = await sendHmyRequest(request);
+   
     console.log('Got response..');
     console.log(response);
 
@@ -62,14 +68,16 @@ export async function getTransactionData(addr, setData) {
         if (tx.input.includes(approvalHash)) {
             let approveObj = {};
             approveObj.txhash = tx.hash;
-            approveObj.contract = tx.to // web3.utils.toChecksumAddress(tx.to);
-            approveObj.approved = "0x" + tx.input.substring(34, 74) //web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
+            const toAddr = new HarmonyAddress(tx.to);
+            //console.log(toAddr.basicHex)
+            approveObj.contract = web3.utils.toChecksumAddress(toAddr.basicHex);
+            approveObj.approved = web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
 
             let allowance = tx.input.substring(74);
             if (allowance.includes(unlimitedAllowance)) {
-                approveObj.allowance = "unlimited";
+                approveObj.allowance = "Unlimited";
             } else {
-                approveObj.allowance = "limited";
+                approveObj.allowance = "Limited";
             }
 
             if (parseInt(allowance, 16) !== 0) {
@@ -77,7 +85,61 @@ export async function getTransactionData(addr, setData) {
                 approveTransactions = approveTransactions.filter((val) => {
                     return !(val.approved === approveObj.approved && val.contract === val.contract);
                 });
+                const abi = [
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "name",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "string"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "symbol",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "string"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    }
+                ];
+                const getShortAddress = (addr) => {
+                    let addressTxt = '';
+                    let addrLen = 0;
+                    if (addr)
+                        addrLen = addr.length;
+                    if (addr && addrLen > 10) {
+                        addressTxt = addr.substring(0, 6) + '...' + addr.substring(addrLen - 4, addrLen);
+                    }
 
+                    return addressTxt;
+                }
+                approveObj.shortContract = getShortAddress(approveObj.contract);
+                try {
+
+                    let contract = new web3.eth.Contract(abi, approveObj.contract);
+                    let symbol = await contract.methods.symbol().call();
+                    //console.log('got symnol?')
+                    //console.log(symbol)
+                    approveObj.contractSymbol = symbol
+                    
+                } catch(error) {
+                    console.log(error)
+                }
+
+                approveObj.shortApproved = getShortAddress(approveObj.approved);
                 approveTransactions.push(approveObj);
             } else {
                 // Allowance == 0 so no need to display this
@@ -93,13 +155,37 @@ export async function getTransactionData(addr, setData) {
 
 }
 
-const revoke = (allowance) => {
-    alert('revoke')
-}
-
-const Allowances = ({ addr }) => {
+const Allowances = ({ addr, web3 }) => {
     const [address, setAddress] = useState(null);
     const [data, setData] = useState(null);
+    const approvalABI = [
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "spender",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "tokens",
+                    "type": "uint256"
+                }
+            ],
+            "name": "approve",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "success",
+                    "type": "bool"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ];
 
     useEffect(() => {
         if (addr && addr !== address) {
@@ -111,19 +197,33 @@ const Allowances = ({ addr }) => {
 
     useEffect(() => {
         if (address && !data) {
-            getTransactionData(address, setData);
+            getTransactionData(address, setData, web3);
         }
-    }, [address, data])
+    }, [address, data, web3])
+
+    const revokeOnClick = (tx) => {
+        alert('Revoke')
+        let contract = new web3.eth.Contract(approvalABI, tx.contract);
+        contract.methods.approve(tx.approved, 0).send({ from: addr }).then((receipt) => {
+            console.log("revoked: " + JSON.stringify(receipt));
+            //$(id).parents('.grid-container').remove();
+            setData(data.filter((val) => {
+                return !(val.txHash === tx.txHash);
+            }))
+        }).catch((err) => {
+            console.log("failed: " + JSON.stringify(err));
+        });
+    }
 
     return <>
         {data &&
             <div className='grid-container'>
-                <div className='grid-item'><b>Contract</b></div>
+                <div className='grid-item'><b>Token</b></div>
                 <div className='grid-item'><b>Approved</b></div>
                 <div className='grid-item'><b>Allowance</b></div>
                 <div className='grid-item'></div>
                 {data.map((allowance) =>
-                    <Allowance key={allowance.contract + '|' + allowance.approved} allowance={allowance} revoke={(data) => revoke(data)} />
+                    <Allowance key={allowance.contract + '|' + allowance.approved} allowance={allowance} revoke={(data) => revokeOnClick(data)} />
                 )}
             </div>
         };
