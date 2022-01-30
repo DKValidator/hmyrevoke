@@ -7,7 +7,7 @@ async function sendHmyRequest(request) {
 
     let url = 'https://api.harmony.one'
 
-    if (window.ethereum.networkVersion === 1666700000)
+    if (window.ethereum.networkVersion == 1666700000)
         url = 'https://api.s0.b.hmny.io'
 
     console.log('request url: ' + url)
@@ -47,7 +47,7 @@ async function getTransactionData(addr, setData, web3) {
     };
 
     const response = await sendHmyRequest(request);
-   
+
     console.log('Got response..');
     console.log(response);
 
@@ -134,8 +134,8 @@ async function getTransactionData(addr, setData, web3) {
                     //console.log('got symnol?')
                     //console.log(symbol)
                     approveObj.contractSymbol = symbol
-                    
-                } catch(error) {
+
+                } catch (error) {
                     console.log(error)
                 }
 
@@ -216,6 +216,9 @@ const Allowances = ({ addr, web3 }) => {
     }
 
     return <>
+        {!data &&
+            <p className='loading-text'>Loading data...</p>
+        }
         {data &&
             <div className='grid-container'>
                 <div className='grid-item'><b>Token</b></div>
@@ -226,7 +229,7 @@ const Allowances = ({ addr, web3 }) => {
                     <Allowance key={allowance.contract + '|' + allowance.approved} allowance={allowance} revoke={(data) => revokeOnClick(data)} />
                 )}
             </div>
-        };
+        }
     </>
 };
 
