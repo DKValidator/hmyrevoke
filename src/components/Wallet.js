@@ -4,7 +4,7 @@ const Wallet = ({ walletConnect, walletDisconnect, isHarmony, isTestnet, isConne
   return <div className='wallet-banner'>
     {!isConnected &&
       <div className='connect-wallet'>
-        <p>Connect your MetaMask wallet.</p>
+        <p><a onClick={() => walletConnect()}>Connect your MetaMask wallet.</a></p>
       </div>
     }
     {isConnected && isHarmony &&

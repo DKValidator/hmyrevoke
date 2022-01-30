@@ -83,7 +83,7 @@ async function getTransactionData(addr, setData, web3) {
             if (parseInt(allowance, 16) !== 0) {
                 // First remove any previous entries for the same contract and approved address
                 approveTransactions = approveTransactions.filter((val) => {
-                    return !(val.approved === approveObj.approved && val.contract === val.contract);
+                    return !(val.approved === approveObj.approved && approveObj.contract === val.contract);
                 });
                 const abi = [
                     {
@@ -144,7 +144,7 @@ async function getTransactionData(addr, setData, web3) {
             } else {
                 // Allowance == 0 so no need to display this
                 approveTransactions = approveTransactions.filter((val) => {
-                    return !(val.approved === approveObj.approved && val.contract === val.contract);
+                    return !(val.approved === approveObj.approved && val.contract === approveObj.contract);
                 });
             }
 
@@ -158,6 +158,9 @@ async function getTransactionData(addr, setData, web3) {
 const Allowances = ({ addr, web3 }) => {
     const [address, setAddress] = useState(null);
     const [data, setData] = useState(null);
+    const [revokeProcessing, setRevokeProcessing] = useState(false);
+    const [revokeError, setRevokeError] = useState(null);
+    const [revokeSuccess, setRevokeSuccess] = useState(null);
     const approvalABI = [
         {
             "constant": false,
@@ -202,22 +205,36 @@ const Allowances = ({ addr, web3 }) => {
     }, [address, data, web3])
 
     const revokeOnClick = (tx) => {
-        alert('Revoke')
+        setRevokeError(null);
+        setRevokeSuccess(null);
+        setRevokeProcessing('Please wait.. Revoking ' + tx.contractSymbol + ' allowance for contract ' + tx.approved);
         let contract = new web3.eth.Contract(approvalABI, tx.contract);
         contract.methods.approve(tx.approved, 0).send({ from: addr }).then((receipt) => {
             console.log("revoked: " + JSON.stringify(receipt));
-            //$(id).parents('.grid-container').remove();
             setData(data.filter((val) => {
-                return !(val.txHash === tx.txHash);
+                return !(val.approved === tx.approved && tx.contract === val.contract);
             }))
+            setRevokeSuccess(tx.contractSymbol + ' allowance revoked for contract ' + tx.approved)
+            setRevokeProcessing(null);
         }).catch((err) => {
             console.log("failed: " + JSON.stringify(err));
+            setRevokeError(JSON.stringify(err));
+            setRevokeProcessing(null);
         });
     }
 
     return <>
         {!data &&
             <p className='loading-text'>Loading data...</p>
+        }
+        {revokeError &&
+            <p className='loading-text'>Error processing revoke. See console for details.</p>
+        }
+        {revokeSuccess &&
+            <p className='loading-text'>{revokeSuccess}</p>
+        }
+        {revokeProcessing &&
+            <p className='loading-text'>{revokeProcessing}</p>
         }
         {data &&
             <div className='grid-container'>
