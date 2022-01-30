@@ -113,7 +113,7 @@ function App() {
 
   return (
     <div className="App">
-      <Heading addr={address} walletBtnOnClick={() => connectWallet()} />
+      <Heading addr={address} walletBtnOnClick={() => connectWallet()} disconnect={() => disconnectWallet()} />
       <Wallet walletConnect={() => connectWallet()} walletDisconnect={() => disconnectWallet()} isHarmony={isHarmony} isTestnet={isTestnet} isConnected={isAuthorized} address={address} />
       {address && web3 &&
         <Allowances addr={address} web3={web3} />
