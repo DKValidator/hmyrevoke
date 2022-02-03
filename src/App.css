@@ -25,6 +25,7 @@ body {
   padding-left: auto;
   padding-right: auto;
   border: 3px;
+  border-style: solid;
   border-radius: 5px;
   border-color: green;
   background-color: lightgreen;
@@ -40,9 +41,10 @@ body {
   padding: 10px;
   padding-left: auto;
   padding-right: auto;
-  border: 5px;
+  border: 3px;
+  border-style: solid;
   border-radius: 5px;
-  border-color: blue;
+  border-color: cadetblue;
   background-color: lightblue;
   text-align: center;
 
@@ -56,17 +58,31 @@ body {
   padding: 10px;
   padding-left: auto;
   padding-right: auto;
-  border: 5px;
+  border: 3px;
+  border-style: solid;
   border-radius: 5px;
   border-color: red;
   background-color: lightcoral;
   text-align: center;
 
 }
+
+.allowances {
+  margin: auto;
+  border: 3px;
+  border-style: solid;
+  border-radius: 5px;
+  border-color: lightgrey;
+  width: 75%;
+  min-height: 300px;
+
+}
+
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto auto;
   justify-content: center;
+
 }
 
 .grid-item {
@@ -77,6 +93,7 @@ body {
 .top-header {
   background-color: black;
   padding: 10px;
+  min-height: 100px;
 }
 
 .header-left {

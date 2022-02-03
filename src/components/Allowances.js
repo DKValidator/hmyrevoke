@@ -224,29 +224,31 @@ const Allowances = ({ addr, web3 }) => {
     }
 
     return <>
-        {!data &&
-            <p className='loading-text'>Loading data...</p>
-        }
-        {revokeError &&
-            <p className='loading-text'>Error processing revoke. See console for details.</p>
-        }
-        {revokeSuccess &&
-            <p className='loading-text'>{revokeSuccess}</p>
-        }
-        {revokeProcessing &&
-            <p className='loading-text'>{revokeProcessing}</p>
-        }
-        {data &&
-            <div className='grid-container'>
-                <div className='grid-item'><b>Token</b></div>
-                <div className='grid-item'><b>Approved</b></div>
-                <div className='grid-item'><b>Allowance</b></div>
-                <div className='grid-item'></div>
-                {data.map((allowance) =>
-                    <Allowance key={allowance.contract + '|' + allowance.approved} allowance={allowance} revoke={(data) => revokeOnClick(data)} />
-                )}
-            </div>
-        }
+        <div className='allowances'>
+            {!data &&
+                <p className='loading-text'>Loading data...</p>
+            }
+            {revokeError &&
+                <p className='loading-text'>Error processing revoke. See console for details.</p>
+            }
+            {revokeSuccess &&
+                <p className='loading-text'>{revokeSuccess}</p>
+            }
+            {revokeProcessing &&
+                <p className='loading-text'>{revokeProcessing}</p>
+            }
+            {data &&
+                <div className='grid-container'>
+                    <div className='grid-item'><b>Token</b></div>
+                    <div className='grid-item'><b>Approved</b></div>
+                    <div className='grid-item'><b>Allowance</b></div>
+                    <div className='grid-item'></div>
+                    {data.map((allowance) =>
+                        <Allowance key={allowance.contract + '|' + allowance.approved} allowance={allowance} revoke={(data) => revokeOnClick(data)} />
+                    )}
+                </div>
+            }
+        </div>
     </>
 };
 
