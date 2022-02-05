@@ -1,6 +1,13 @@
 import React from 'react';
+import { getShortAddress } from '../utils/shortaddress';
 
 const Wallet = ({ walletConnect, walletDisconnect, isHarmony, isTestnet, isConnected, address }) => {
+
+  const smallScreen = window.screen.availWidth < 700;
+  let addrText = address;
+  if (smallScreen)
+    addrText = getShortAddress(address);
+    
   return <div className='wallet-banner'>
     {!isConnected &&
       <div className='connect-wallet'>
@@ -9,7 +16,7 @@ const Wallet = ({ walletConnect, walletDisconnect, isHarmony, isTestnet, isConne
     }
     {isConnected && isHarmony &&
       <div className='wallet-connected'>
-        <p>Connected: {address} {isTestnet && <b>TESTNET</b>}</p>
+        <p>Connected: {addrText} {isTestnet && <b>TESTNET</b>}</p>
       </div>
     }
     {isConnected && !isHarmony &&

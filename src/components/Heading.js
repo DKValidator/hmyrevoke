@@ -1,15 +1,11 @@
 import React from 'react';
 import logo from "../assets/dkv cropped.png";
+import { getShortAddress } from '../utils/shortaddress';
 
 
 const Heading = ({ addr, walletBtnOnClick, disconnect }) => {
-    let addressTxt = '';
-    let addrLen = 0;
-    if (addr)
-        addrLen = addr.length;
-    if (addr && addrLen > 10) {
-        addressTxt = addr.substring(0, 6) + '...' + addr.substring(addrLen - 4, addrLen);
-    }
+    let addressTxt = getShortAddress(addr);
+    
     return (
         <>
             <div className="top-header">

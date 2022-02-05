@@ -1,7 +1,8 @@
 import React from 'react';
 import Allowance from './Allowance';
 import { useState, useEffect } from 'react';
-import { HarmonyAddress } from '@harmony-js/crypto'
+import { HarmonyAddress } from '@harmony-js/crypto';
+import { getShortAddress } from '../utils/shortaddress';
 
 async function sendHmyRequest(request) {
 
@@ -115,17 +116,7 @@ async function getTransactionData(addr, setData, web3) {
                         "type": "function"
                     }
                 ];
-                const getShortAddress = (addr) => {
-                    let addressTxt = '';
-                    let addrLen = 0;
-                    if (addr)
-                        addrLen = addr.length;
-                    if (addr && addrLen > 10) {
-                        addressTxt = addr.substring(0, 6) + '...' + addr.substring(addrLen - 4, addrLen);
-                    }
 
-                    return addressTxt;
-                }
                 approveObj.shortContract = getShortAddress(approveObj.contract);
                 try {
 
