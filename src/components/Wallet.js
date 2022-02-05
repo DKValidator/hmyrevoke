@@ -7,19 +7,19 @@ const Wallet = ({ walletConnect, walletDisconnect, isHarmony, isTestnet, isConne
   let addrText = address;
   if (smallScreen)
     addrText = getShortAddress(address);
-    
+
   return <div className='wallet-banner'>
     {!isConnected &&
       <div className='connect-wallet'>
         <p><a onClick={() => walletConnect()}>Connect your MetaMask wallet.</a></p>
       </div>
     }
-    {isConnected && isHarmony &&
+    {(isConnected && isHarmony) &&
       <div className='wallet-connected'>
-        <p>Connected: {addrText} {isTestnet && <b>TESTNET</b>}</p>
+        <p>Connected {isTestnet && <b>(TESTNET)</b>}: {addrText}</p>
       </div>
     }
-    {isConnected && !isHarmony &&
+    {(isConnected && !isHarmony) &&
       <div className='wrong-network'>
         <p>Wrong network detected switch to Harmony.</p>
       </div>
