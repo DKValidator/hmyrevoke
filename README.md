@@ -12,7 +12,7 @@ In the project directory, you can run:
 
 ## `yarn`
 
-Run to download and import all project depemdencies.
+Run to download and import all project dependencies.
 
 ### `yarn start`
 
