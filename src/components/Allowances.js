@@ -3,12 +3,13 @@ import Allowance from './Allowance';
 import { useState, useEffect } from 'react';
 import { HarmonyAddress } from '@harmony-js/crypto';
 import { getShortAddress } from '../utils/shortaddress';
+import Notification from './Notification';
 
 async function sendHmyRequest(request) {
 
     let url = 'https://api.harmony.one'
 
-    if (window.ethereum.networkVersion == 1666700000)
+    if (window.ethereum.networkVersion === 1666700000)
         url = 'https://api.s0.b.hmny.io'
 
     console.log('request url: ' + url)
@@ -152,6 +153,8 @@ const Allowances = ({ addr, web3 }) => {
     const [revokeProcessing, setRevokeProcessing] = useState(false);
     const [revokeError, setRevokeError] = useState(null);
     const [revokeSuccess, setRevokeSuccess] = useState(null);
+    const [notification, setNotification] = useState(null);
+    const [showNotification, setShowNotification] = useState(false);
     const approvalABI = [
         {
             "constant": false,
@@ -205,16 +208,24 @@ const Allowances = ({ addr, web3 }) => {
             setData(data.filter((val) => {
                 return !(val.approved === tx.approved && tx.contract === val.contract);
             }))
-            setRevokeSuccess(tx.contractSymbol + ' allowance revoked for contract ' + tx.approved)
+            setRevokeSuccess(tx.contractSymbol + ' allowance revoked for contract ' + tx.approved);
+            setNotification({
+                text: tx.contractSymbol + ' allowance revoked for contract ' + tx.approved
+            });
+            setShowNotification(true);
             setRevokeProcessing(null);
         }).catch((err) => {
             console.log("failed: " + JSON.stringify(err));
             setRevokeError(JSON.stringify(err));
             setRevokeProcessing(null);
+            setNotification({
+                text: "failed: " + JSON.stringify(err)
+            });
         });
     }
 
     return <>
+       {notification &&  <Notification show={showNotification} data={notification} setShow={(show) => setShowNotification(show)} />}
         <div className='allowances'>
             {!data &&
                 <p className='loading-text'>Loading data...</p>
