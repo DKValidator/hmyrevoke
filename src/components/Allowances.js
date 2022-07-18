@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import Allowance from './Allowance';
 import { useState, useEffect } from 'react';
 import { HarmonyAddress } from '@harmony-js/crypto';
@@ -60,6 +62,7 @@ async function getTransactionData(addr, setData, web3) {
     let approveTransactions = [];
     console.dir(response.result)
     let dataObj = response.result.transactions;
+    console.log('dataObj')
     console.dir(dataObj);
 
     if (!dataObj)
@@ -68,10 +71,12 @@ async function getTransactionData(addr, setData, web3) {
     for (let tx of dataObj) {
 
         if (tx.input.includes(approvalHash)) {
+            console.log('Got approval')
             let approveObj = {};
             approveObj.txhash = tx.hash;
             const toAddr = new HarmonyAddress(tx.to);
             //console.log(toAddr.basicHex)
+            approveObj.txHash = tx.hash;
             approveObj.contract = web3.utils.toChecksumAddress(toAddr.basicHex);
             approveObj.approved = web3.utils.toChecksumAddress("0x" + tx.input.substring(34, 74));
 
@@ -119,6 +124,7 @@ async function getTransactionData(addr, setData, web3) {
                 ];
 
                 approveObj.shortContract = getShortAddress(approveObj.contract);
+                /*
                 try {
 
                     let contract = new web3.eth.Contract(abi, approveObj.contract);
@@ -130,7 +136,7 @@ async function getTransactionData(addr, setData, web3) {
                 } catch (error) {
                     console.log(error)
                 }
-
+*/
                 approveObj.shortApproved = getShortAddress(approveObj.approved);
                 approveTransactions.push(approveObj);
             } else {
@@ -142,7 +148,8 @@ async function getTransactionData(addr, setData, web3) {
 
         }
     }
-
+    console.log('Got data:')
+    console.log(approveTransactions)
     setData(approveTransactions);
 
 }
@@ -225,10 +232,10 @@ const Allowances = ({ addr, web3 }) => {
     }
 
     return <>
-       {notification &&  <Notification show={showNotification} data={notification} setShow={(show) => setShowNotification(show)} />}
+        {notification && <Notification show={showNotification} data={notification} setShow={(show) => setShowNotification(show)} />}
         <div className='allowances'>
             {!data &&
-                <p className='loading-text'>Loading data...</p>
+                <p className='loading-text'><FontAwesomeIcon spin={true} icon={solid('spinner')} /> Loading data...</p>
             }
             {revokeError &&
                 <p className='loading-text'>Error processing revoke. See console for details.</p>
@@ -237,13 +244,13 @@ const Allowances = ({ addr, web3 }) => {
                 <p className='loading-text'>{revokeSuccess}</p>
             }
             {revokeProcessing &&
-                <p className='loading-text'>{revokeProcessing}</p>
+                <p className='loading-text'><FontAwesomeIcon spin={true} icon={solid('spinner')} /> {revokeProcessing}</p>
             }
             {data &&
                 <div className='grid-container'>
-                    <div className='grid-item'><b>Token</b></div>
-                    <div className='grid-item'><b>Approved</b></div>
-                    <div className='grid-item'><b>Allowance</b></div>
+                    <div className='grid-item' style={{color: "#00AEE9"}}><b>Token</b></div>
+                    <div className='grid-item' style={{color: "#00AEE9"}}><b>Approved Contract</b></div>
+                    <div className='grid-item' style={{color: "#00AEE9"}}><b>Allowance</b></div>
                     <div className='grid-item'></div>
                     {data.map((allowance) =>
                         <Allowance key={allowance.contract + '|' + allowance.approved} allowance={allowance} revoke={(data) => revokeOnClick(data)} />

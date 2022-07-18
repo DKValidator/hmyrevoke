@@ -9,6 +9,7 @@ const Wallet = ({ walletConnect, walletDisconnect, isHarmony, isTestnet, isConne
     addrText = getShortAddress(address);
 
   return <div className='wallet-banner'>
+    {/*
     {!isConnected &&
       <div className='connect-wallet'>
         <p><a onClick={() => walletConnect()}>Connect your MetaMask wallet.</a></p>
@@ -19,6 +20,7 @@ const Wallet = ({ walletConnect, walletDisconnect, isHarmony, isTestnet, isConne
         <p>Connected {isTestnet && <b>(TESTNET)</b>}: {addrText}</p>
       </div>
     }
+  */}
     {(isConnected && !isHarmony) &&
       <div className='wrong-network'>
         <p>Wrong network detected switch to Harmony.</p>

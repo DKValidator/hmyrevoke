@@ -5,6 +5,7 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { useState, useEffect } from 'react'
 import Web3 from "web3";
 import Wallet from './components/Wallet';
+import Footer from './components/Footer';
 
 
 
@@ -118,6 +119,8 @@ function App() {
       {address && web3 &&
         <Allowances addr={address} web3={web3} />
       }
+      <div style={{height: "60px"}}></div>
+      <Footer />
     </div>
   );
 }

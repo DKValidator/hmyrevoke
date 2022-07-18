@@ -1,7 +1,58 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap');
 
 body {
+  background-color: black;
   font-family: 'Nunito', sans-serif;
+  color: white;
+}
+
+.header {
+  text-align: center;
+  padding: 10px;
+  min-height: 75px;
+}
+
+.header:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.logo {
+  float: left;
+  padding: 0px;
+  margin: 1px;
+}
+
+.harmonylogo {
+  margin-right: 5px;
+
+}
+
+.walletbutton {
+  background-color: rgb(57, 54, 54);
+  color: #00AEE9;
+  font-size: small;
+  /*font-weight: bold;*/
+  text-align: center;
+  min-height: 45px;
+  min-width: 135px;
+  padding: 15px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+  transition-duration: 0.4s;
+  float: right;
+}
+
+.walletbutton:hover {
+  background-color: rgb(70, 65, 65);
+  cursor: pointer;
+}
+
+.walletbutton:active {
+  background-color: rgb(108, 99, 99);
+  border-color: rgb(70, 65, 65);
 }
 
 .wallet-banner {
@@ -88,16 +139,36 @@ body {
 .grid-item {
   margin: auto;
   padding: 10px;
+  color: #69FFC9;
 }
 
-.top-header {
-  background-color: black;
+.btn {
+  background-color: rgb(174, 170, 170);
+  color: black;
+  text-align: center;
   padding: 10px;
-  min-height: 100px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+  border-color: rgb(174, 170, 170);
+  transition-duration: 0.4s;
+
 }
 
-.header-left {
-  float: right;
+.btn:hover {
+  background-color: rgb(70, 65, 65);
+  color: #00AEE9;
+  cursor: pointer;
+}
+
+a {
+  color: #69FFC9;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #FFB800;
+  text-decoration: none;
 }
 
 .row {
@@ -132,4 +203,39 @@ body {
 
 .chart {
   margin: auto;
+}
+
+.footer {
+  clear: both;
+  /*position: relative; */
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  background-color: rgb(57, 54, 54);
+  text-align: center;
+  padding: 10px;
+  margin: 0%;
+  /*position: fixed; */
+  /*bottom: 0; */
+  height: 40px;
+  width: 100%;
+  /*width: 100%;*/
+  color: #00AEE9;
+  /*margin-top: -200%;*/
+}
+
+@media screen and (max-width: 775px) {
+  .footer {
+    position: relative;
+  }
+}
+
+.social-link:link, .social-link:visited {
+  color: #00AEE9;
+  cursor: pointer;
+}
+
+.social-link:hover, .social-link:active {
+  color:  #69FFC9;
+  cursor: pointer;
 }
