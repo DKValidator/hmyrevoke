@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { HarmonyAddress } from '@harmony-js/crypto';
 import { getShortAddress } from '../utils/shortaddress';
 import Notification from './Notification';
+import { getTokenNames } from '../utils/contract';
 
 async function sendHmyRequest(request) {
 
@@ -92,51 +93,12 @@ async function getTransactionData(addr, setData, web3) {
                 approveTransactions = approveTransactions.filter((val) => {
                     return !(val.approved === approveObj.approved && approveObj.contract === val.contract);
                 });
-                const abi = [
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "name",
-                        "outputs": [
-                            {
-                                "name": "",
-                                "type": "string"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "symbol",
-                        "outputs": [
-                            {
-                                "name": "",
-                                "type": "string"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    }
-                ];
+                
 
                 approveObj.shortContract = getShortAddress(approveObj.contract);
-                /*
-                try {
+                
 
-                    let contract = new web3.eth.Contract(abi, approveObj.contract);
-                    let symbol = await contract.methods.symbol().call();
-                    //console.log('got symnol?')
-                    //console.log(symbol)
-                    approveObj.contractSymbol = symbol
 
-                } catch (error) {
-                    console.log(error)
-                }
-*/
                 approveObj.shortApproved = getShortAddress(approveObj.approved);
                 approveTransactions.push(approveObj);
             } else {
@@ -162,6 +124,7 @@ const Allowances = ({ addr, web3 }) => {
     const [revokeSuccess, setRevokeSuccess] = useState(null);
     const [notification, setNotification] = useState(null);
     const [showNotification, setShowNotification] = useState(false);
+    const [gotTokens, setGotTokens] = useState(false)
     const approvalABI = [
         {
             "constant": false,
@@ -204,6 +167,11 @@ const Allowances = ({ addr, web3 }) => {
             getTransactionData(address, setData, web3);
         }
     }, [address, data, web3])
+
+    useEffect(() => {
+        if (data && !gotTokens)
+            getTokenNames(web3, data, setData, setGotTokens)
+    }, [data, web3, gotTokens])
 
     const revokeOnClick = (tx) => {
         setRevokeError(null);

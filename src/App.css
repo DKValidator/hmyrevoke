@@ -120,10 +120,6 @@ body {
 
 .allowances {
   margin: auto;
-  border: 3px;
-  border-style: solid;
-  border-radius: 5px;
-  border-color: lightgrey;
   width: 95%;
   /*min-height: 300px;*/
 
@@ -143,21 +139,19 @@ body {
 }
 
 .btn {
-  background-color: rgb(174, 170, 170);
-  color: black;
+  background-color: black;
+  color: red;
   text-align: center;
   padding: 10px;
   margin: 5px;
   border-radius: 10px;
-  border: none;
-  border-color: rgb(174, 170, 170);
   transition-duration: 0.4s;
 
 }
 
 .btn:hover {
   background-color: rgb(70, 65, 65);
-  color: #00AEE9;
+  color: red;
   cursor: pointer;
 }
 

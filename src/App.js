@@ -115,6 +115,7 @@ function App() {
   return (
     <div className="App">
       <Heading addr={address} walletBtnOnClick={() => connectWallet()} disconnect={() => disconnectWallet()} />
+      <p style={{textAlign: "center"}}>Revoke smart contract token spend allowances.</p>
       <Wallet walletConnect={() => connectWallet()} walletDisconnect={() => disconnectWallet()} isHarmony={isHarmony} isTestnet={isTestnet} isConnected={isAuthorized} address={address} />
       {address && web3 &&
         <Allowances addr={address} web3={web3} />
