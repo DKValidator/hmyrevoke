@@ -10,7 +10,7 @@ import { getTokenNames } from '../utils/contract';
 
 async function sendHmyRequest(request) {
 
-    let url = 'https://api.harmony.one'
+    let url = 'https://rpc.s0.t.hmny.io'
 
     if (window.ethereum.networkVersion === 1666700000)
         url = 'https://api.s0.b.hmny.io'
